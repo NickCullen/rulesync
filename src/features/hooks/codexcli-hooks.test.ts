@@ -434,9 +434,9 @@ describe("CodexcliConfigToml", () => {
     await cleanup();
   });
 
-  it("should generate config.toml with codex_hooks feature flag", async () => {
+  it("should generate config.toml with hooks feature flag", async () => {
     const configToml = await CodexcliConfigToml.fromOutputRoot({ outputRoot: testDir });
-    expect(configToml.getFileContent()).toContain("codex_hooks");
+    expect(configToml.getFileContent()).toContain("hooks = true");
   });
 
   it("should preserve existing config.toml content", async () => {
@@ -448,19 +448,32 @@ describe("CodexcliConfigToml", () => {
 
     const configToml = await CodexcliConfigToml.fromOutputRoot({ outputRoot: testDir });
     const content = configToml.getFileContent();
-    expect(content).toContain("codex_hooks");
+    expect(content).toContain("hooks = true");
     expect(content).toContain("mcp_servers");
     expect(content).toContain("myserver");
   });
 
-  it("should preserve existing [features] values when enabling codex_hooks", async () => {
+  it("should preserve existing [features] values when enabling hooks", async () => {
     await ensureDir(join(testDir, ".codex"));
     await writeFileContent(join(testDir, ".codex", "config.toml"), "[features]\nverbose = true\n");
 
     const configToml = await CodexcliConfigToml.fromOutputRoot({ outputRoot: testDir });
     const content = configToml.getFileContent();
-    expect(content).toContain("codex_hooks = true");
+    expect(content).toContain("hooks = true");
     expect(content).toContain("verbose = true");
+  });
+
+  it("should remove the legacy codex_hooks flag if present", async () => {
+    await ensureDir(join(testDir, ".codex"));
+    await writeFileContent(
+      join(testDir, ".codex", "config.toml"),
+      "[features]\ncodex_hooks = true\n",
+    );
+
+    const configToml = await CodexcliConfigToml.fromOutputRoot({ outputRoot: testDir });
+    const content = configToml.getFileContent();
+    expect(content).toContain("hooks = true");
+    expect(content).not.toContain("codex_hooks");
   });
 
   it("should throw a readable error when existing config.toml is invalid", async () => {
