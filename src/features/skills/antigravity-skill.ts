@@ -41,7 +41,7 @@ export type AntigravitySkillParams = {
 export class AntigravitySkill extends ToolSkill {
   constructor({
     outputRoot = process.cwd(),
-    relativeDirPath = join(".agent", "skills"),
+    relativeDirPath = join(".agents", "skills"),
     dirName,
     frontmatter,
     body,
@@ -76,7 +76,7 @@ export class AntigravitySkill extends ToolSkill {
     global?: boolean;
   } = {}): ToolSkillSettablePaths {
     // Antigravity skills use different paths for project and global modes:
-    // - Project mode: {process.cwd()}/.agent/skills/
+    // - Project mode: {process.cwd()}/.agents/skills/
     // - Global mode: {getHomeDirectory()}/.gemini/antigravity/skills/
     if (global) {
       return {
@@ -84,7 +84,7 @@ export class AntigravitySkill extends ToolSkill {
       };
     }
     return {
-      relativeDirPath: join(".agent", "skills"),
+      relativeDirPath: join(".agents", "skills"),
     };
   }
 

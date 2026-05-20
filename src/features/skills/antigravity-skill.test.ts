@@ -24,14 +24,14 @@ describe("AntigravitySkill", () => {
   });
 
   describe("getSettablePaths", () => {
-    it("should return .agent/skills as relativeDirPath in project mode", () => {
+    it("should return .agents/skills as relativeDirPath in project mode", () => {
       const paths = AntigravitySkill.getSettablePaths();
-      expect(paths.relativeDirPath).toBe(join(".agent", "skills"));
+      expect(paths.relativeDirPath).toBe(join(".agents", "skills"));
     });
 
-    it("should return .agent/skills as relativeDirPath when global is false", () => {
+    it("should return .agents/skills as relativeDirPath when global is false", () => {
       const paths = AntigravitySkill.getSettablePaths({ global: false });
-      expect(paths.relativeDirPath).toBe(join(".agent", "skills"));
+      expect(paths.relativeDirPath).toBe(join(".agents", "skills"));
     });
 
     it("should return .gemini/antigravity/skills as relativeDirPath in global mode", () => {
@@ -44,7 +44,7 @@ describe("AntigravitySkill", () => {
     it("should create instance with valid content in project mode", () => {
       const skill = new AntigravitySkill({
         outputRoot: testDir,
-        relativeDirPath: join(".agent", "skills"),
+        relativeDirPath: join(".agents", "skills"),
         dirName: "test-skill",
         frontmatter: {
           name: "Test Skill",
@@ -90,7 +90,7 @@ describe("AntigravitySkill", () => {
         () =>
           new AntigravitySkill({
             outputRoot: testDir,
-            relativeDirPath: join(".agent", "skills"),
+            relativeDirPath: join(".agents", "skills"),
             dirName: "test-skill",
             frontmatter: {
               name: "Test Skill",
@@ -106,7 +106,7 @@ describe("AntigravitySkill", () => {
 
   describe("fromDir", () => {
     it("should create instance from valid skill directory in project mode", async () => {
-      const skillDir = join(testDir, ".agent", "skills", "test-skill");
+      const skillDir = join(testDir, ".agents", "skills", "test-skill");
       await ensureDir(skillDir);
       const skillContent = `---
 name: Test Skill
@@ -156,7 +156,7 @@ This is the body of the antigravity skill.`;
     });
 
     it("should throw error when SKILL.md not found", async () => {
-      const skillDir = join(testDir, ".agent", "skills", "empty-skill");
+      const skillDir = join(testDir, ".agents", "skills", "empty-skill");
       await ensureDir(skillDir);
 
       await expect(
@@ -169,7 +169,7 @@ This is the body of the antigravity skill.`;
     });
 
     it("should throw error with invalid frontmatter", async () => {
-      const skillDir = join(testDir, ".agent", "skills", "invalid-skill");
+      const skillDir = join(testDir, ".agents", "skills", "invalid-skill");
       await ensureDir(skillDir);
       const skillContent = `---
 name: Test Skill
@@ -301,7 +301,7 @@ Missing description field.`;
     it("should convert to a RulesyncSkill in project mode", () => {
       const skill = new AntigravitySkill({
         outputRoot: testDir,
-        relativeDirPath: join(".agent", "skills"),
+        relativeDirPath: join(".agents", "skills"),
         dirName: "test-skill",
         frontmatter: {
           name: "Test Skill",
@@ -351,7 +351,7 @@ Missing description field.`;
     it("should create instance for deletion in project mode", () => {
       const skill = AntigravitySkill.forDeletion({
         outputRoot: testDir,
-        relativeDirPath: join(".agent", "skills"),
+        relativeDirPath: join(".agents", "skills"),
         dirName: "skill-to-delete",
         global: false,
       });
@@ -377,7 +377,7 @@ Missing description field.`;
     it("should return success for valid skill", () => {
       const skill = new AntigravitySkill({
         outputRoot: testDir,
-        relativeDirPath: join(".agent", "skills"),
+        relativeDirPath: join(".agents", "skills"),
         dirName: "valid-skill",
         frontmatter: {
           name: "Valid Skill",

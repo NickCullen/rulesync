@@ -326,7 +326,7 @@ export class AntigravityRule extends ToolRule {
   ): AntigravityRuleSettablePaths {
     return {
       nonRoot: {
-        relativeDirPath: buildToolPath(".agent", "rules", _options.excludeToolDir),
+        relativeDirPath: buildToolPath(".agents", "rules", _options.excludeToolDir),
       },
     };
   }
@@ -383,7 +383,6 @@ export class AntigravityRule extends ToolRule {
   }: ToolRuleFromRulesyncRuleParams): AntigravityRule {
     const rulesyncFrontmatter = rulesyncRule.getFrontmatter();
 
-    // Normalize once before dispatching to strategy
     const storedAntigravity = rulesyncFrontmatter.antigravity;
     const normalized = normalizeStoredAntigravity(storedAntigravity);
     const storedTrigger = storedAntigravity?.trigger;
@@ -397,7 +396,7 @@ export class AntigravityRule extends ToolRule {
 
     const frontmatter = strategy.generateFrontmatter(normalized, rulesyncFrontmatter);
 
-    // Both root and non-root rules are placed in .agent/rules directory
+    // Both root and non-root rules are placed in .agents/rules directory
     const paths = this.getSettablePaths();
 
     const kebabCaseFilename = toKebabCaseFilename(rulesyncRule.getRelativeFilePath());
@@ -420,7 +419,7 @@ export class AntigravityRule extends ToolRule {
    * frontmatter.antigravity field for round-trip compatibility.
    *
    * Note: All Antigravity rules are treated as non-root (root: false),
-   * as they are all placed in the .agent/rules directory.
+   * as they are all placed in the .agents/rules directory.
    *
    * @returns RulesyncRule instance with Antigravity config preserved
    */

@@ -124,6 +124,7 @@ const toolSkillFactories = new Map<SkillsProcessorToolTarget, ToolSkillFactory>(
       meta: { supportsProject: true, supportsSimulated: false, supportsGlobal: true },
     },
   ],
+
   [
     "claudecode",
     {

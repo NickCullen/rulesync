@@ -262,3 +262,6 @@ rulesync.local.jsonc
 **/.takt/tasks/
 **/.takt/.cache/
 **/.takt/config.yaml
+
+
+.antigravitycli/

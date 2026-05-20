@@ -120,6 +120,7 @@ const toolCommandFactories = new Map<CommandsProcessorToolTarget, ToolCommandFac
       },
     },
   ],
+
   [
     "claudecode",
     {

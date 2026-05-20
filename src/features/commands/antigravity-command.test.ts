@@ -19,7 +19,7 @@ describe("AntigravityCommand", () => {
 
       const command = new AntigravityCommand({
         outputRoot: ".",
-        relativeDirPath: ".agent/workflows",
+        relativeDirPath: ".agents/workflows",
         relativeFilePath: "test.md",
         frontmatter,
         body,
@@ -28,7 +28,7 @@ describe("AntigravityCommand", () => {
 
       expect(command.getBody()).toBe(body);
       expect(command.getFrontmatter()).toEqual(frontmatter);
-      expect(command.getRelativeDirPath()).toBe(".agent/workflows");
+      expect(command.getRelativeDirPath()).toBe(".agents/workflows");
       expect(command.getRelativeFilePath()).toBe("test.md");
     });
 
@@ -40,7 +40,7 @@ describe("AntigravityCommand", () => {
       expect(() => {
         new AntigravityCommand({
           outputRoot: ".",
-          relativeDirPath: ".agent/workflows",
+          relativeDirPath: ".agents/workflows",
           relativeFilePath: "test.md",
           frontmatter: invalidFrontmatter as any,
           body: "test body",
@@ -58,7 +58,7 @@ describe("AntigravityCommand", () => {
       expect(() => {
         new AntigravityCommand({
           outputRoot: ".",
-          relativeDirPath: ".agent/workflows",
+          relativeDirPath: ".agents/workflows",
           relativeFilePath: "test.md",
           frontmatter: invalidFrontmatter as any,
           body: "test body",
@@ -77,7 +77,7 @@ describe("AntigravityCommand", () => {
 
       const command = new AntigravityCommand({
         outputRoot: ".",
-        relativeDirPath: ".agent/workflows",
+        relativeDirPath: ".agents/workflows",
         relativeFilePath: "test.md",
         frontmatter,
         body: "test body",
@@ -92,7 +92,7 @@ describe("AntigravityCommand", () => {
     it("should return error for invalid frontmatter", () => {
       const command = new AntigravityCommand({
         outputRoot: ".",
-        relativeDirPath: ".agent/workflows",
+        relativeDirPath: ".agents/workflows",
         relativeFilePath: "test.md",
         frontmatter: { description: 123 } as any,
         body: "test body",
@@ -108,7 +108,7 @@ describe("AntigravityCommand", () => {
     it("should return success when frontmatter is undefined", () => {
       const command = new AntigravityCommand({
         outputRoot: ".",
-        relativeDirPath: ".agent/workflows",
+        relativeDirPath: ".agents/workflows",
         relativeFilePath: "test.md",
         frontmatter: { description: "test" },
         body: "test body",
@@ -134,7 +134,7 @@ describe("AntigravityCommand", () => {
 
       const antigravityCommand = new AntigravityCommand({
         outputRoot: "/test/base",
-        relativeDirPath: ".agent/workflows",
+        relativeDirPath: ".agents/workflows",
         relativeFilePath: "convert-test.md",
         frontmatter,
         body,
@@ -164,7 +164,7 @@ describe("AntigravityCommand", () => {
 
       const antigravityCommand = new AntigravityCommand({
         outputRoot: "/test/base",
-        relativeDirPath: ".agent/workflows",
+        relativeDirPath: ".agents/workflows",
         relativeFilePath: "my-workflow.md",
         frontmatter,
         body,
@@ -192,7 +192,7 @@ describe("AntigravityCommand", () => {
 
       const antigravityCommand = new AntigravityCommand({
         outputRoot: "/test/base",
-        relativeDirPath: ".agent/workflows",
+        relativeDirPath: ".agents/workflows",
         relativeFilePath: "simple.md",
         frontmatter,
         body,
@@ -241,7 +241,7 @@ describe("AntigravityCommand", () => {
         trigger: "/from-rulesync",
         turbo: true,
       });
-      expect(antigravityCommand.getRelativeDirPath()).toBe(".agent/workflows");
+      expect(antigravityCommand.getRelativeDirPath()).toBe(".agents/workflows");
       expect(antigravityCommand.getRelativeFilePath()).toBe("from-rulesync.md");
     });
 
@@ -580,7 +580,7 @@ Actual command content`;
         const body = "Workflow body from file";
         const fileContent = stringifyFrontmatter(body, frontmatter);
 
-        const workflowsDir = join(testDir, ".agent/workflows");
+        const workflowsDir = join(testDir, ".agents/workflows");
         await writeFileContent(join(workflowsDir, "test-file.md"), fileContent);
 
         const command = await AntigravityCommand.fromFile({
@@ -590,7 +590,7 @@ Actual command content`;
 
         expect(command.getBody()).toBe(body);
         expect(command.getFrontmatter()).toEqual(frontmatter);
-        expect(command.getRelativeDirPath()).toBe(".agent/workflows");
+        expect(command.getRelativeDirPath()).toBe(".agents/workflows");
         expect(command.getRelativeFilePath()).toBe("test-file.md");
       } finally {
         await cleanup();
@@ -618,7 +618,7 @@ Actual command content`;
 
       try {
         const invalidContent = "---\ndescription: 123\n---\nBody content";
-        const workflowsDir = join(testDir, ".agent/workflows");
+        const workflowsDir = join(testDir, ".agents/workflows");
         await writeFileContent(join(workflowsDir, "invalid.md"), invalidContent);
 
         await expect(
@@ -685,7 +685,7 @@ Actual command content`;
     it("should return correct workflows path", () => {
       const paths = AntigravityCommand.getSettablePaths();
 
-      expect(paths.relativeDirPath).toBe(".agent/workflows");
+      expect(paths.relativeDirPath).toBe(".agents/workflows");
     });
   });
 });

@@ -36,7 +36,7 @@ describe("ClaudecodeMcp", () => {
     it("should return correct paths for global mode", () => {
       const paths = ClaudecodeMcp.getSettablePaths({ global: true });
 
-      expect(paths.relativeDirPath).toBe(".claude");
+      expect(paths.relativeDirPath).toBe(".");
       expect(paths.relativeFilePath).toBe(".claude.json");
     });
   });
@@ -55,7 +55,7 @@ describe("ClaudecodeMcp", () => {
 
     it("should return false in global mode", () => {
       const claudecodeMcp = new ClaudecodeMcp({
-        relativeDirPath: ".claude",
+        relativeDirPath: ".",
         relativeFilePath: ".claude.json",
         fileContent: JSON.stringify({ mcpServers: {} }),
         global: true,
@@ -66,7 +66,7 @@ describe("ClaudecodeMcp", () => {
 
     it("should return false when created via forDeletion with global: true", () => {
       const claudecodeMcp = ClaudecodeMcp.forDeletion({
-        relativeDirPath: ".claude",
+        relativeDirPath: ".",
         relativeFilePath: ".claude.json",
         global: true,
       });
@@ -305,11 +305,7 @@ describe("ClaudecodeMcp", () => {
           },
         },
       };
-      await ensureDir(join(testDir, ".claude"));
-      await writeFileContent(
-        join(testDir, ".claude/.claude.json"),
-        JSON.stringify(jsonData, null, 2),
-      );
+      await writeFileContent(join(testDir, ".claude.json"), JSON.stringify(jsonData, null, 2));
 
       const claudecodeMcp = await ClaudecodeMcp.fromFile({
         outputRoot: testDir,
@@ -318,7 +314,7 @@ describe("ClaudecodeMcp", () => {
 
       expect(claudecodeMcp).toBeInstanceOf(ClaudecodeMcp);
       expect(claudecodeMcp.getJson()).toEqual(jsonData);
-      expect(claudecodeMcp.getFilePath()).toBe(join(testDir, ".claude/.claude.json"));
+      expect(claudecodeMcp.getFilePath()).toBe(join(testDir, ".claude.json"));
       expect(claudecodeMcp.isDeletable()).toBe(false);
     });
 
@@ -350,7 +346,7 @@ describe("ClaudecodeMcp", () => {
 
       expect(claudecodeMcp).toBeInstanceOf(ClaudecodeMcp);
       expect(claudecodeMcp.getJson()).toEqual({ mcpServers: {} });
-      expect(claudecodeMcp.getFilePath()).toBe(join(testDir, ".claude/.claude.json"));
+      expect(claudecodeMcp.getFilePath()).toBe(join(testDir, ".claude.json"));
       expect(claudecodeMcp.isDeletable()).toBe(false);
     });
 
@@ -368,9 +364,8 @@ describe("ClaudecodeMcp", () => {
         },
         version: "1.0.0",
       };
-      await ensureDir(join(testDir, ".claude"));
       await writeFileContent(
-        join(testDir, ".claude/.claude.json"),
+        join(testDir, ".claude.json"),
         JSON.stringify(existingGlobalConfig, null, 2),
       );
 
@@ -535,7 +530,7 @@ describe("ClaudecodeMcp", () => {
 
       expect(claudecodeMcp).toBeInstanceOf(ClaudecodeMcp);
       expect(claudecodeMcp.getJson()).toEqual(jsonData);
-      expect(claudecodeMcp.getRelativeDirPath()).toBe(".claude");
+      expect(claudecodeMcp.getRelativeDirPath()).toBe(".");
       expect(claudecodeMcp.getRelativeFilePath()).toBe(".claude.json");
       expect(claudecodeMcp.isDeletable()).toBe(false);
     });
@@ -580,9 +575,8 @@ describe("ClaudecodeMcp", () => {
         },
         version: "1.0.0",
       };
-      await ensureDir(join(testDir, ".claude"));
       await writeFileContent(
-        join(testDir, ".claude/.claude.json"),
+        join(testDir, ".claude.json"),
         JSON.stringify(existingGlobalConfig, null, 2),
       );
 
@@ -629,9 +623,8 @@ describe("ClaudecodeMcp", () => {
         },
         customProperty: "value",
       };
-      await ensureDir(join(testDir, ".claude"));
       await writeFileContent(
-        join(testDir, ".claude/.claude.json"),
+        join(testDir, ".claude.json"),
         JSON.stringify(existingGlobalConfig, null, 2),
       );
 
@@ -773,7 +766,7 @@ describe("ClaudecodeMcp", () => {
         version: "2.0.0",
       };
       const claudecodeMcp = new ClaudecodeMcp({
-        relativeDirPath: ".claude",
+        relativeDirPath: ".",
         relativeFilePath: ".claude.json",
         fileContent: JSON.stringify(jsonData),
       });
@@ -964,9 +957,8 @@ describe("ClaudecodeMcp", () => {
           },
         },
       };
-      await ensureDir(join(testDir, ".claude"));
       await writeFileContent(
-        join(testDir, ".claude/.claude.json"),
+        join(testDir, ".claude.json"),
         JSON.stringify(originalJsonData, null, 2),
       );
 
@@ -988,7 +980,7 @@ describe("ClaudecodeMcp", () => {
 
       // Verify data integrity
       expect(newClaudecodeMcp.getJson()).toEqual(originalJsonData);
-      expect(newClaudecodeMcp.getFilePath()).toBe(join(testDir, ".claude/.claude.json"));
+      expect(newClaudecodeMcp.getFilePath()).toBe(join(testDir, ".claude.json"));
     });
   });
 
@@ -1004,8 +996,7 @@ describe("ClaudecodeMcp", () => {
     });
 
     it("should handle malformed JSON in global config gracefully", async () => {
-      await ensureDir(join(testDir, ".claude"));
-      await writeFileContent(join(testDir, ".claude/.claude.json"), "{ invalid: json }");
+      await writeFileContent(join(testDir, ".claude.json"), "{ invalid: json }");
 
       await expect(
         ClaudecodeMcp.fromFile({

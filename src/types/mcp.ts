@@ -6,6 +6,7 @@ export const McpServerSchema = z.looseObject({
   args: z.optional(z.array(z.string())),
   url: z.optional(z.string()),
   httpUrl: z.optional(z.string()),
+  serverUrl: z.optional(z.string()),
   env: z.optional(z.record(z.string(), z.string())),
   disabled: z.optional(z.boolean()),
   networkTimeout: z.optional(z.number()),

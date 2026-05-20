@@ -33,6 +33,13 @@
       "commands": true,
       "subagents": true,
       "skills": true
+    },
+    "antigravity": {
+      "rules": true,
+      "commands": true,
+      "mcp": true,
+      "subagents": true,
+      "skills": true
     }
   },
 

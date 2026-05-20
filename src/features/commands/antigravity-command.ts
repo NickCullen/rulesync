@@ -50,7 +50,7 @@ export class AntigravityCommand extends ToolCommand {
 
   static getSettablePaths(): AntigravityCommandSettablePaths {
     return {
-      relativeDirPath: join(".agent", "workflows"),
+      relativeDirPath: join(".agents", "workflows"),
     };
   }
 
@@ -89,7 +89,9 @@ export class AntigravityCommand extends ToolCommand {
       targets: ["antigravity"],
       description,
       // Preserve extra fields in antigravity section
-      ...(Object.keys(restFields).length > 0 && { antigravity: restFields }),
+      ...(Object.keys(restFields).length > 0 && {
+        antigravity: restFields,
+      }),
     };
 
     // Generate proper file content with Rulesync specific frontmatter
@@ -109,7 +111,8 @@ export class AntigravityCommand extends ToolCommand {
   private static extractAntigravityConfig(
     rulesyncCommand: RulesyncCommand,
   ): Record<string, unknown> | undefined {
-    const antigravity = rulesyncCommand.getFrontmatter().antigravity;
+    const frontmatter = rulesyncCommand.getFrontmatter();
+    const antigravity = frontmatter.antigravity;
     return isRecord(antigravity) ? antigravity : undefined;
   }
 

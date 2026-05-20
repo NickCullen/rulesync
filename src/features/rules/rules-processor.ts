@@ -264,6 +264,7 @@ const toolRuleFactories = new Map<RulesProcessorToolTarget, ToolRuleFactory>([
       },
     },
   ],
+
   [
     "augmentcode",
     {

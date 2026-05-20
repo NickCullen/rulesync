@@ -30,13 +30,13 @@ describe("AntigravityRule", () => {
     it("should create instance with default parameters", () => {
       const antigravityRule = new AntigravityRule({
         frontmatter: { trigger: "always_on" },
-        relativeDirPath: ".agent/rules",
+        relativeDirPath: ".agents/rules",
         relativeFilePath: "test-rule.md",
         body: "# Test Rule\n\nThis is a test rule.",
       });
 
       expect(antigravityRule).toBeInstanceOf(AntigravityRule);
-      expect(antigravityRule.getRelativeDirPath()).toBe(".agent/rules");
+      expect(antigravityRule.getRelativeDirPath()).toBe(".agents/rules");
       expect(antigravityRule.getRelativeFilePath()).toBe("test-rule.md");
       expect(antigravityRule.getFileContent().trim()).toBe(`---
 trigger: always_on
@@ -50,19 +50,19 @@ This is a test rule.`);
       const antigravityRule = new AntigravityRule({
         frontmatter: { trigger: "always_on" },
         outputRoot: "/custom/path",
-        relativeDirPath: ".agent/rules",
+        relativeDirPath: ".agents/rules",
         relativeFilePath: "test-rule.md",
         body: "# Custom Rule",
       });
 
-      expect(antigravityRule.getFilePath()).toBe("/custom/path/.agent/rules/test-rule.md");
+      expect(antigravityRule.getFilePath()).toBe("/custom/path/.agents/rules/test-rule.md");
     });
 
     it("should validate content by default", () => {
       expect(() => {
         const _instance = new AntigravityRule({
           frontmatter: { trigger: "always_on" },
-          relativeDirPath: ".agent/rules",
+          relativeDirPath: ".agents/rules",
           relativeFilePath: "test-rule.md",
           body: "", // empty content should be valid since validate always returns success
         });
@@ -73,7 +73,7 @@ This is a test rule.`);
       expect(() => {
         const _instance = new AntigravityRule({
           frontmatter: { trigger: "always_on" },
-          relativeDirPath: ".agent/rules",
+          relativeDirPath: ".agents/rules",
           relativeFilePath: "test-rule.md",
           body: "",
           validate: false,
@@ -84,7 +84,7 @@ This is a test rule.`);
     it("should handle root rule parameter", () => {
       const antigravityRule = new AntigravityRule({
         frontmatter: { trigger: "always_on" },
-        relativeDirPath: ".agent/rules",
+        relativeDirPath: ".agents/rules",
         relativeFilePath: "test-rule.md",
         body: "# Root Rule",
         root: false,
@@ -100,7 +100,7 @@ trigger: always_on
   describe("fromFile", () => {
     it("should create instance from existing file", async () => {
       // Setup test file
-      const rulesDir = join(testDir, ".agent/rules");
+      const rulesDir = join(testDir, ".agents/rules");
       await ensureDir(rulesDir);
       const testContent =
         "---\ntrigger: always_on\n---\n\n# Test Rule from File\n\nContent from file.";
@@ -111,15 +111,15 @@ trigger: always_on
         relativeFilePath: "test.md",
       });
 
-      expect(antigravityRule.getRelativeDirPath()).toBe(".agent/rules");
+      expect(antigravityRule.getRelativeDirPath()).toBe(".agents/rules");
       expect(antigravityRule.getRelativeFilePath()).toBe("test.md");
       expect(antigravityRule.getFileContent().trim()).toBe(testContent);
-      expect(antigravityRule.getFilePath()).toBe(join(testDir, ".agent/rules/test.md"));
+      expect(antigravityRule.getFilePath()).toBe(join(testDir, ".agents/rules/test.md"));
     });
 
     it("should use default outputRoot when not provided", async () => {
       // Setup test file using testDir
-      const rulesDir = join(testDir, ".agent/rules");
+      const rulesDir = join(testDir, ".agents/rules");
       await ensureDir(rulesDir);
       const testContent = "---\ntrigger: always_on\n---\n\n# Default OutputRoot Test";
       const testFilePath = join(rulesDir, "default-test.md");
@@ -130,14 +130,14 @@ trigger: always_on
         relativeFilePath: "default-test.md",
       });
 
-      expect(antigravityRule.getRelativeDirPath()).toBe(".agent/rules");
+      expect(antigravityRule.getRelativeDirPath()).toBe(".agents/rules");
       expect(antigravityRule.getRelativeFilePath()).toBe("default-test.md");
       expect(antigravityRule.getFileContent().trim()).toBe(testContent);
-      expect(antigravityRule.getFilePath()).toBe(join(testDir, ".agent/rules/default-test.md"));
+      expect(antigravityRule.getFilePath()).toBe(join(testDir, ".agents/rules/default-test.md"));
     });
 
     it("should handle validation parameter", async () => {
-      const rulesDir = join(testDir, ".agent/rules");
+      const rulesDir = join(testDir, ".agents/rules");
       await ensureDir(rulesDir);
       const testContent = "---\ntrigger: always_on\n---\n\n# Validation Test";
       await writeFileContent(join(rulesDir, "validation-test.md"), testContent);
@@ -187,7 +187,7 @@ trigger: always_on
       });
 
       expect(antigravityRule).toBeInstanceOf(AntigravityRule);
-      expect(antigravityRule.getRelativeDirPath()).toBe(".agent/rules");
+      expect(antigravityRule.getRelativeDirPath()).toBe(".agents/rules");
       expect(antigravityRule.getRelativeFilePath()).toBe("test-rule.md");
       expect(antigravityRule.getFileContent()).toContain(
         "# Test RulesyncRule\n\nContent from rulesync.",
@@ -212,7 +212,7 @@ trigger: always_on
         rulesyncRule,
       });
 
-      expect(antigravityRule.getFilePath()).toBe("/custom/base/.agent/rules/custom-base.md");
+      expect(antigravityRule.getFilePath()).toBe("/custom/base/.agents/rules/custom-base.md");
     });
 
     it("should handle validation parameter", () => {
@@ -242,7 +242,7 @@ trigger: always_on
       expect(withoutValidation.getFileContent()).toContain("# Validation Test");
     });
 
-    it("should place root rules in .agent/rules directory", () => {
+    it("should place root rules in .agents/rules directory", () => {
       const rulesyncRule = new RulesyncRule({
         relativeDirPath: RULESYNC_RELATIVE_DIR_PATH,
         relativeFilePath: "overview.md",
@@ -259,8 +259,8 @@ trigger: always_on
         rulesyncRule,
       });
 
-      // Root rules are also placed in .agent/rules directory
-      expect(antigravityRule.getRelativeDirPath()).toBe(".agent/rules");
+      // Root rules are also placed in .agents/rules directory
+      expect(antigravityRule.getRelativeDirPath()).toBe(".agents/rules");
       expect(antigravityRule.getRelativeFilePath()).toBe("overview.md");
       expect(antigravityRule.isRoot()).toBe(false);
       expect(antigravityRule.getFileContent()).toContain("# Project Overview");
@@ -284,7 +284,7 @@ trigger: always_on
         rulesyncRule,
       });
 
-      expect(antigravityRule.getFilePath()).toBe("/project/.agent/rules/my-custom-root.md");
+      expect(antigravityRule.getFilePath()).toBe("/project/.agents/rules/my-custom-root.md");
       expect(antigravityRule.getRelativeFilePath()).toBe("my-custom-root.md");
     });
 
@@ -306,7 +306,7 @@ trigger: always_on
       });
 
       expect(antigravityRule.getRelativeFilePath()).toBe("coding-guidelines.md");
-      expect(antigravityRule.getRelativeDirPath()).toBe(".agent/rules");
+      expect(antigravityRule.getRelativeDirPath()).toBe(".agents/rules");
     });
 
     it("should convert snake_case filenames to kebab-case", () => {
@@ -403,7 +403,7 @@ trigger: always_on
       for (const { frontmatter, expectedGlobs, expectedAntigravityTrigger } of testCases) {
         const antigravityRule = new AntigravityRule({
           frontmatter,
-          relativeDirPath: ".agent/rules",
+          relativeDirPath: ".agents/rules",
           relativeFilePath: "test.md",
           body: "# Test Rule",
         });
@@ -469,7 +469,7 @@ trigger: always_on
     it("should always return success", () => {
       const antigravityRule = new AntigravityRule({
         frontmatter: { trigger: "always_on" },
-        relativeDirPath: ".agent/rules",
+        relativeDirPath: ".agents/rules",
         relativeFilePath: "test.md",
         body: "# Test",
       });
@@ -484,7 +484,7 @@ trigger: always_on
       const antigravityRule = new AntigravityRule({
         // Invalid: globs should be string, pass number to force schema failure
         frontmatter: { trigger: "glob", globs: 123 } as any,
-        relativeDirPath: ".agent/rules",
+        relativeDirPath: ".agents/rules",
         relativeFilePath: "test.md",
         body: "# Test",
         validate: false,
@@ -552,12 +552,12 @@ trigger: always_on
     it("should return correct nonRoot path", () => {
       const paths = AntigravityRule.getSettablePaths();
 
-      expect(paths.nonRoot.relativeDirPath).toBe(".agent/rules");
+      expect(paths.nonRoot.relativeDirPath).toBe(".agents/rules");
     });
   });
   describe("frontmatter", () => {
     it("should parse frontmatter from file", async () => {
-      const rulesDir = join(testDir, ".agent/rules");
+      const rulesDir = join(testDir, ".agents/rules");
       await ensureDir(rulesDir);
       const content = `---
 trigger: glob
@@ -581,7 +581,7 @@ globs: '*.ts'
     });
 
     it("should handle all supported triggers", async () => {
-      const rulesDir = join(testDir, ".agent/rules");
+      const rulesDir = join(testDir, ".agents/rules");
       await ensureDir(rulesDir);
 
       const testCases = [
@@ -618,7 +618,7 @@ globs: '*.ts'
     });
 
     it("should use default trigger for file without frontmatter", async () => {
-      const rulesDir = join(testDir, ".agent/rules");
+      const rulesDir = join(testDir, ".agents/rules");
       await ensureDir(rulesDir);
       const content = "# No Frontmatter";
       await writeFileContent(join(rulesDir, "no-frontmatter.md"), content);
