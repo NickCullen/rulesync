@@ -341,6 +341,7 @@ This rule is converted to multiple tools.
       to: "claudecode",
       features: "rules",
       dryRun: true,
+      env: { NODE_ENV: "e2e" },
     });
 
     // Dry-run summary must advertise itself; no destination file should be written.

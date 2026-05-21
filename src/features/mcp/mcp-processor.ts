@@ -386,36 +386,51 @@ export class McpProcessor extends FeatureProcessor {
     try {
       const factory = this.getFactory(this.toolTarget);
       const paths = factory.class.getSettablePaths({ global: this.global });
+      const allPaths = [paths, ...(paths.alternativePaths ?? [])];
 
       if (forDeletion) {
-        const toolMcp = factory.class.forDeletion({
-          outputRoot: this.outputRoot,
-          relativeDirPath: paths.relativeDirPath,
-          relativeFilePath: paths.relativeFilePath,
-          global: this.global,
-        });
+        const toolMcps: ToolFile[] = [];
+        for (const p of allPaths) {
+          const toolMcp = factory.class.forDeletion({
+            outputRoot: this.outputRoot,
+            relativeDirPath: p.relativeDirPath,
+            relativeFilePath: p.relativeFilePath,
+            global: this.global,
+          });
 
-        const toolMcps = toolMcp.isDeletable() ? [toolMcp] : [];
+          if (toolMcp.isDeletable()) {
+            toolMcps.push(toolMcp);
+          }
+        }
         this.logger.debug(`Successfully loaded ${toolMcps.length} ${this.toolTarget} MCP files`);
         return toolMcps;
       }
 
-      const toolMcps = [
-        await factory.class.fromFile({
-          outputRoot: this.outputRoot,
-          validate: true,
-          global: this.global,
-        }),
-      ];
+      const toolMcps: ToolFile[] = [];
+      for (const p of allPaths) {
+        try {
+          const toolMcp = await factory.class.fromFile({
+            outputRoot: this.outputRoot,
+            validate: true,
+            global: this.global,
+            relativeDirPath: p.relativeDirPath,
+            relativeFilePath: p.relativeFilePath,
+          });
+          toolMcps.push(toolMcp);
+        } catch (err) {
+          const errorMessage = `Failed to load MCP file from ${p.relativeDirPath}/${p.relativeFilePath}: ${formatError(err)}`;
+          if (err instanceof Error && err.message.includes("no such file or directory")) {
+            this.logger.debug(errorMessage);
+          } else {
+            this.logger.error(errorMessage);
+          }
+        }
+      }
       this.logger.debug(`Successfully loaded ${toolMcps.length} ${this.toolTarget} MCP files`);
       return toolMcps;
     } catch (error) {
       const errorMessage = `Failed to load MCP files for tool target: ${this.toolTarget}: ${formatError(error)}`;
-      if (error instanceof Error && error.message.includes("no such file or directory")) {
-        this.logger.debug(errorMessage);
-      } else {
-        this.logger.error(errorMessage);
-      }
+      this.logger.error(errorMessage);
       return [];
     }
   }
@@ -434,18 +449,23 @@ export class McpProcessor extends FeatureProcessor {
     }
 
     const factory = this.getFactory(this.toolTarget);
-    const toolMcps = await Promise.all(
-      [rulesyncMcp].map(async (mcp) => {
-        // Strip MCP server fields unsupported by the target tool
-        const fieldsToStrip: string[] = [];
-        if (!factory.meta.supportsEnabledTools) fieldsToStrip.push("enabledTools");
-        if (!factory.meta.supportsDisabledTools) fieldsToStrip.push("disabledTools");
-        const filteredRulesyncMcp = mcp.stripMcpServerFields(fieldsToStrip);
+    const paths = factory.class.getSettablePaths({ global: this.global });
+    const allPaths = [paths, ...(paths.alternativePaths ?? [])];
 
+    // Strip MCP server fields unsupported by the target tool
+    const fieldsToStrip: string[] = [];
+    if (!factory.meta.supportsEnabledTools) fieldsToStrip.push("enabledTools");
+    if (!factory.meta.supportsDisabledTools) fieldsToStrip.push("disabledTools");
+    const filteredRulesyncMcp = rulesyncMcp.stripMcpServerFields(fieldsToStrip);
+
+    const toolMcps = await Promise.all(
+      allPaths.map(async (p) => {
         return await factory.class.fromRulesyncMcp({
           outputRoot: this.outputRoot,
           rulesyncMcp: filteredRulesyncMcp,
           global: this.global,
+          relativeDirPath: p.relativeDirPath,
+          relativeFilePath: p.relativeFilePath,
         });
       }),
     );

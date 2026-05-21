@@ -37,6 +37,10 @@ describe("AntigravitySkill", () => {
     it("should return .gemini/antigravity/skills as relativeDirPath in global mode", () => {
       const paths = AntigravitySkill.getSettablePaths({ global: true });
       expect(paths.relativeDirPath).toBe(join(".gemini", "antigravity", "skills"));
+      expect(paths.alternativeSkillRoots).toEqual([
+        join(".gemini", "antigravity-cli", "skills"),
+        join(".gemini", "antigravity-ide", "skills"),
+      ]);
     });
   });
 
@@ -241,6 +245,31 @@ Missing description field.`;
         name: "Test Skill",
         description: "Test skill description",
       });
+    });
+
+    it("should support custom relativeDirPath", () => {
+      const rulesyncSkill = new RulesyncSkill({
+        outputRoot: testDir,
+        relativeDirPath: RULESYNC_SKILLS_RELATIVE_DIR_PATH,
+        dirName: "test-skill",
+        frontmatter: {
+          name: "Test Skill",
+          description: "Test skill description",
+        },
+        body: "Test body content",
+        validate: true,
+      });
+
+      const antigravitySkill = AntigravitySkill.fromRulesyncSkill({
+        rulesyncSkill,
+        validate: true,
+        global: true,
+        relativeDirPath: join(".gemini", "antigravity-cli", "skills"),
+      });
+
+      expect(antigravitySkill.getRelativeDirPath()).toBe(
+        join(".gemini", "antigravity-cli", "skills"),
+      );
     });
   });
 

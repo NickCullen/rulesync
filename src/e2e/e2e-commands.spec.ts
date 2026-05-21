@@ -24,7 +24,7 @@ describe("E2E: commands", () => {
     { target: "kilo", outputPath: join(".kilo", "commands", "review-pr.md") },
     { target: "roo", outputPath: join(".roo", "commands", "review-pr.md") },
     { target: "kiro", outputPath: join(".kiro", "prompts", "review-pr.md") },
-    { target: "antigravity", outputPath: join(".agent", "workflows", "review-pr.md") },
+    { target: "antigravity", outputPath: join(".agents", "workflows", "review-pr.md") },
     { target: "junie", outputPath: join(".junie", "commands", "review-pr.md") },
     { target: "takt", outputPath: join(".takt", "facets", "instructions", "review-pr.md") },
     { target: "pi", outputPath: join(".pi", "prompts", "review-pr.md") },
@@ -89,7 +89,7 @@ Check the PR diff and provide feedback.
     { target: "kilo", orphanPath: join(".kilo", "commands", "orphan.md") },
     { target: "roo", orphanPath: join(".roo", "commands", "orphan.md") },
     { target: "kiro", orphanPath: join(".kiro", "prompts", "orphan.md") },
-    { target: "antigravity", orphanPath: join(".agent", "workflows", "orphan.md") },
+    { target: "antigravity", orphanPath: join(".agents", "workflows", "orphan.md") },
     { target: "junie", orphanPath: join(".junie", "commands", "orphan.md") },
     { target: "pi", orphanPath: join(".pi", "prompts", "orphan.md") },
   ])(
@@ -132,7 +132,7 @@ describe("E2E: commands (import)", () => {
     { target: "kilo", sourcePath: join(".kilo", "commands", "review-pr.md") },
     { target: "roo", sourcePath: join(".roo", "commands", "review-pr.md") },
     { target: "kiro", sourcePath: join(".kiro", "prompts", "review-pr.md") },
-    { target: "antigravity", sourcePath: join(".agent", "workflows", "review-pr.md") },
+    { target: "antigravity", sourcePath: join(".agents", "workflows", "review-pr.md") },
     { target: "junie", sourcePath: join(".junie", "commands", "review-pr.md") },
     { target: "pi", sourcePath: join(".pi", "prompts", "review-pr.md") },
   ])("should import $target commands", async ({ target, sourcePath }) => {

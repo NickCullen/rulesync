@@ -81,6 +81,10 @@ export class AntigravitySkill extends ToolSkill {
     if (global) {
       return {
         relativeDirPath: join(".gemini", "antigravity", "skills"),
+        alternativeSkillRoots: [
+          join(".gemini", "antigravity-cli", "skills"),
+          join(".gemini", "antigravity-ide", "skills"),
+        ],
       };
     }
     return {
@@ -142,6 +146,7 @@ export class AntigravitySkill extends ToolSkill {
     rulesyncSkill,
     validate = true,
     global = false,
+    relativeDirPath,
   }: ToolSkillFromRulesyncSkillParams): AntigravitySkill {
     const rulesyncFrontmatter = rulesyncSkill.getFrontmatter();
 
@@ -151,10 +156,11 @@ export class AntigravitySkill extends ToolSkill {
     };
 
     const settablePaths = AntigravitySkill.getSettablePaths({ global });
+    const actualDirPath = relativeDirPath ?? settablePaths.relativeDirPath;
 
     return new AntigravitySkill({
       outputRoot,
-      relativeDirPath: settablePaths.relativeDirPath,
+      relativeDirPath: actualDirPath,
       dirName: rulesyncSkill.getDirName(),
       frontmatter: antigravityFrontmatter,
       body: rulesyncSkill.getBody(),

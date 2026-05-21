@@ -14,12 +14,18 @@ export type ToolMcpFromRulesyncMcpParams = Omit<
   "fileContent" | "relativeFilePath" | "relativeDirPath"
 > & {
   rulesyncMcp: RulesyncMcp;
+  global?: boolean;
+  relativeDirPath?: string;
+  relativeFilePath?: string;
 };
 
 export type ToolMcpFromFileParams = Pick<
   AiFileFromFileParams,
   "outputRoot" | "validate" | "global"
->;
+> & {
+  relativeDirPath?: string;
+  relativeFilePath?: string;
+};
 
 export type ToolMcpForDeletionParams = {
   outputRoot?: string;
@@ -31,6 +37,7 @@ export type ToolMcpForDeletionParams = {
 export type ToolMcpSettablePaths = {
   relativeDirPath: string;
   relativeFilePath: string;
+  alternativePaths?: ToolMcpSettablePaths[];
 };
 
 export abstract class ToolMcp extends ToolFile {

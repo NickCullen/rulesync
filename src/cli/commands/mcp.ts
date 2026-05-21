@@ -18,7 +18,8 @@ export async function mcpCommand(logger: Logger, { version }: { version: string 
   server.addTool(rulesyncTool);
 
   // Start server with stdio transport (for spawned processes)
-  logger.info("Rulesync MCP server started via stdio");
+  // We must output startup messages to stderr to avoid corrupting stdio transport JSON-RPC stream
+  process.stderr.write("Rulesync MCP server started via stdio\n");
 
   // Start the server - this blocks execution and runs the MCP server
   // The void operator explicitly marks this as intentionally not awaited

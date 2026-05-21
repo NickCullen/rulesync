@@ -334,29 +334,39 @@ export class SkillsProcessor extends DirFeatureProcessor {
     );
 
     const factory = this.getFactory(this.toolTarget);
+    const paths = factory.class.getSettablePaths({ global: this.global });
 
-    const toolSkills = rulesyncSkills
-      .map((rulesyncSkill) => {
-        const rulesyncFrontmatter = rulesyncSkill.getFrontmatter();
-        const isClaudecodeScheduledTask =
-          rulesyncFrontmatter.claudecode?.["scheduled-task"] === true;
-        if (
-          isClaudecodeScheduledTask &&
-          this.toolTarget !== "claudecode" &&
-          this.toolTarget !== "claudecode-legacy"
-        ) {
-          return null;
-        }
-        if (!factory.class.isTargetedByRulesyncSkill(rulesyncSkill)) {
-          return null;
-        }
-        return factory.class.fromRulesyncSkill({
+    const targetRoots =
+      this.toolTarget === "antigravity" && this.global
+        ? toolSkillSearchRoots(paths)
+        : [paths.relativeDirPath];
+
+    const toolSkills: ToolSkill[] = [];
+
+    for (const rulesyncSkill of rulesyncSkills) {
+      const rulesyncFrontmatter = rulesyncSkill.getFrontmatter();
+      const isClaudecodeScheduledTask = rulesyncFrontmatter.claudecode?.["scheduled-task"] === true;
+      if (
+        isClaudecodeScheduledTask &&
+        this.toolTarget !== "claudecode" &&
+        this.toolTarget !== "claudecode-legacy"
+      ) {
+        continue;
+      }
+      if (!factory.class.isTargetedByRulesyncSkill(rulesyncSkill)) {
+        continue;
+      }
+
+      for (const root of targetRoots) {
+        const skill = factory.class.fromRulesyncSkill({
           outputRoot: this.outputRoot,
           rulesyncSkill: rulesyncSkill,
           global: this.global,
+          relativeDirPath: root,
         });
-      })
-      .filter((skill): skill is ToolSkill => skill !== null);
+        toolSkills.push(skill);
+      }
+    }
 
     return toolSkills;
   }

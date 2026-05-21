@@ -75,12 +75,22 @@ export class AntigravityMcp extends ToolMcp {
     if (global) {
       return {
         relativeDirPath: join(".gemini", "antigravity"),
-        relativeFilePath: "mcp.json",
+        relativeFilePath: "mcp_config.json",
+        alternativePaths: [
+          {
+            relativeDirPath: join(".gemini", "antigravity-cli"),
+            relativeFilePath: "mcp_config.json",
+          },
+          {
+            relativeDirPath: join(".gemini", "antigravity-ide"),
+            relativeFilePath: "mcp_config.json",
+          },
+        ],
       };
     }
     return {
       relativeDirPath: ".agents",
-      relativeFilePath: "mcp.json",
+      relativeFilePath: "mcp_config.json",
     };
   }
 
@@ -88,16 +98,18 @@ export class AntigravityMcp extends ToolMcp {
     outputRoot = process.cwd(),
     validate = true,
     global = false,
+    relativeDirPath,
+    relativeFilePath,
   }: ToolMcpFromFileParams): Promise<AntigravityMcp> {
     const paths = this.getSettablePaths({ global });
-    const fileContent = await readFileContent(
-      join(outputRoot, paths.relativeDirPath, paths.relativeFilePath),
-    );
+    const actualDirPath = relativeDirPath ?? paths.relativeDirPath;
+    const actualFilePath = relativeFilePath ?? paths.relativeFilePath;
+    const fileContent = await readFileContent(join(outputRoot, actualDirPath, actualFilePath));
 
     return new AntigravityMcp({
       outputRoot,
-      relativeDirPath: paths.relativeDirPath,
-      relativeFilePath: paths.relativeFilePath,
+      relativeDirPath: actualDirPath,
+      relativeFilePath: actualFilePath,
       fileContent,
       validate,
       global,
@@ -109,13 +121,17 @@ export class AntigravityMcp extends ToolMcp {
     rulesyncMcp,
     validate = true,
     global = false,
-  }: ToolMcpFromRulesyncMcpParams & { global?: boolean }): AntigravityMcp {
+    relativeDirPath,
+    relativeFilePath,
+  }: ToolMcpFromRulesyncMcpParams): AntigravityMcp {
     const antigravityConfig = convertToAntigravityFormat(rulesyncMcp.getMcpServers());
     const paths = this.getSettablePaths({ global });
+    const actualDirPath = relativeDirPath ?? paths.relativeDirPath;
+    const actualFilePath = relativeFilePath ?? paths.relativeFilePath;
     return new AntigravityMcp({
       outputRoot,
-      relativeDirPath: paths.relativeDirPath,
-      relativeFilePath: paths.relativeFilePath,
+      relativeDirPath: actualDirPath,
+      relativeFilePath: actualFilePath,
       fileContent: JSON.stringify(antigravityConfig, null, 2),
       validate,
       global,

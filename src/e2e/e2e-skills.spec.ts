@@ -65,7 +65,7 @@ describe("E2E: skills", () => {
     },
     {
       target: "antigravity",
-      outputPath: join(".agent", "skills", "test-skill", "SKILL.md"),
+      outputPath: join(".agents", "skills", "test-skill", "SKILL.md"),
     },
     {
       target: "junie",
@@ -154,7 +154,7 @@ This is the test skill body content.
     { target: "rovodev", orphanPath: join(".rovodev", "skills", "orphan-skill", "SKILL.md") },
     { target: "windsurf", orphanPath: join(".windsurf", "skills", "orphan-skill", "SKILL.md") },
     { target: "kiro", orphanPath: join(".kiro", "skills", "orphan-skill", "SKILL.md") },
-    { target: "antigravity", orphanPath: join(".agent", "skills", "orphan-skill", "SKILL.md") },
+    { target: "antigravity", orphanPath: join(".agents", "skills", "orphan-skill", "SKILL.md") },
     { target: "junie", orphanPath: join(".junie", "skills", "orphan-skill", "SKILL.md") },
     { target: "replit", orphanPath: join(".agents", "skills", "orphan-skill", "SKILL.md") },
     { target: "agentsskills", orphanPath: join(".agents", "skills", "orphan-skill", "SKILL.md") },
@@ -204,7 +204,7 @@ describe("E2E: skills (import)", () => {
     { target: "rovodev", sourcePath: join(".rovodev", "skills", "test-skill", "SKILL.md") },
     { target: "windsurf", sourcePath: join(".windsurf", "skills", "test-skill", "SKILL.md") },
     { target: "kiro", sourcePath: join(".kiro", "skills", "test-skill", "SKILL.md") },
-    { target: "antigravity", sourcePath: join(".agent", "skills", "test-skill", "SKILL.md") },
+    { target: "antigravity", sourcePath: join(".agents", "skills", "test-skill", "SKILL.md") },
     { target: "junie", sourcePath: join(".junie", "skills", "test-skill", "SKILL.md") },
     { target: "replit", sourcePath: join(".agents", "skills", "test-skill", "SKILL.md") },
     { target: "pi", sourcePath: join(".pi", "skills", "test-skill", "SKILL.md") },

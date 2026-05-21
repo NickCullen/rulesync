@@ -33,6 +33,7 @@ describe("E2E: mcp", () => {
     { target: "roo", outputPath: join(".roo", "mcp.json") },
     { target: "kiro", outputPath: join(".kiro", "settings", "mcp.json") },
     { target: "junie", outputPath: join(".junie", "mcp", "mcp.json") },
+    { target: "antigravity", outputPath: join(".agents", "mcp_config.json") },
   ])("should generate $target mcp", async ({ target, outputPath }) => {
     const testDir = getTestDir();
 
@@ -74,6 +75,7 @@ describe("E2E: mcp", () => {
     { target: "roo", orphanPath: join(".roo", "mcp.json") },
     { target: "kiro", orphanPath: join(".kiro", "settings", "mcp.json") },
     { target: "junie", orphanPath: join(".junie", "mcp", "mcp.json") },
+    { target: "antigravity", orphanPath: join(".agents", "mcp_config.json") },
   ])(
     "should fail in check mode when delete would remove an orphan $target mcp file",
     async ({ target, orphanPath }) => {
@@ -193,6 +195,7 @@ describe("E2E: mcp (import)", () => {
     { target: "roo", sourcePath: join(".roo", "mcp.json") },
     { target: "kiro", sourcePath: join(".kiro", "settings", "mcp.json") },
     { target: "junie", sourcePath: join(".junie", "mcp", "mcp.json") },
+    { target: "antigravity", sourcePath: join(".agents", "mcp_config.json") },
   ])("should import $target mcp", async ({ target, sourcePath }) => {
     const testDir = getTestDir();
 
@@ -221,7 +224,7 @@ describe("E2E: mcp (global mode)", () => {
   const { getProjectDir, getHomeDir } = useGlobalTestDirectories();
 
   it.each([
-    { target: "claudecode", outputPath: join(".claude", ".claude.json") },
+    { target: "claudecode", outputPath: ".claude.json" },
     { target: "cursor", outputPath: join(".cursor", "mcp.json") },
     { target: "geminicli", outputPath: join(".gemini", "settings.json") },
     { target: "opencode", outputPath: join(".config", "opencode", "opencode.jsonc") },
@@ -230,6 +233,7 @@ describe("E2E: mcp (global mode)", () => {
     { target: "deepagents", outputPath: join(".deepagents", ".mcp.json") },
     { target: "factorydroid", outputPath: join(".factory", "mcp.json") },
     { target: "rovodev", outputPath: join(".rovodev", "mcp.json") },
+    { target: "antigravity", outputPath: join(".gemini", "antigravity", "mcp_config.json") },
   ])("should generate $target mcp in home directory", async ({ target, outputPath }) => {
     const projectDir = getProjectDir();
     const homeDir = getHomeDir();
@@ -314,7 +318,7 @@ describe("E2E: mcp (global mode)", () => {
     });
 
     // Verify: root mcp content is present, non-root mcp content is absent
-    const generatedContent = await readFileContent(join(homeDir, ".claude", ".claude.json"));
+    const generatedContent = await readFileContent(join(homeDir, ".claude.json"));
     expect(generatedContent).toContain("root-server");
     expect(generatedContent).not.toContain("non-root-server");
   });

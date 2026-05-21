@@ -1,3 +1,5 @@
+import { join } from "node:path";
+
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -6,6 +8,7 @@ import {
 } from "../../constants/rulesync-paths.js";
 import { createMockLogger } from "../../test-utils/mock-logger.js";
 import { setupTestDirectory } from "../../test-utils/test-directories.js";
+import { AntigravityMcp } from "./antigravity-mcp.js";
 import { ClaudecodeMcp } from "./claudecode-mcp.js";
 import { ClineMcp } from "./cline-mcp.js";
 import { CodexcliMcp } from "./codexcli-mcp.js";
@@ -23,6 +26,7 @@ import { RooMcp } from "./roo-mcp.js";
 import { RulesyncMcp } from "./rulesync-mcp.js";
 
 // Mock all MCP classes with their static methods
+vi.mock("./antigravity-mcp.js");
 vi.mock("./claudecode-mcp.js");
 vi.mock("./cline-mcp.js");
 vi.mock("./codexcli-mcp.js");
@@ -55,6 +59,13 @@ describe("McpProcessor", () => {
     vi.clearAllMocks();
 
     // Setup static method mocks
+    (AntigravityMcp as any).fromFile = vi.fn();
+    (AntigravityMcp as any).fromRulesyncMcp = vi.fn();
+    (AntigravityMcp as any).forDeletion = vi.fn().mockImplementation((params) => ({
+      ...params,
+      isDeletable: () => true,
+      getRelativeFilePath: () => params.relativeFilePath,
+    }));
     (ClaudecodeMcp as any).fromFile = vi.fn();
     (ClaudecodeMcp as any).fromRulesyncMcp = vi.fn();
     (ClaudecodeMcp as any).forDeletion = vi.fn().mockImplementation((params) => ({
@@ -217,11 +228,13 @@ describe("McpProcessor", () => {
 
         expect(files).toHaveLength(1);
         expect(files[0]).toBe(mockMcp);
-        expect(ClaudecodeMcp.fromFile).toHaveBeenCalledWith({
-          outputRoot: testDir,
-          validate: true,
-          global: false,
-        });
+        expect(ClaudecodeMcp.fromFile).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outputRoot: testDir,
+            validate: true,
+            global: false,
+          }),
+        );
       });
 
       it("should load ClaudecodeMcp files for claudecode-legacy target", async () => {
@@ -244,11 +257,13 @@ describe("McpProcessor", () => {
 
         expect(files).toHaveLength(1);
         expect(files[0]).toBe(mockMcp);
-        expect(ClaudecodeMcp.fromFile).toHaveBeenCalledWith({
-          outputRoot: testDir,
-          validate: true,
-          global: false,
-        });
+        expect(ClaudecodeMcp.fromFile).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outputRoot: testDir,
+            validate: true,
+            global: false,
+          }),
+        );
       });
 
       it("should load ClaudecodeMcp files in global mode", async () => {
@@ -272,11 +287,13 @@ describe("McpProcessor", () => {
 
         expect(files).toHaveLength(1);
         expect(files[0]).toBe(mockMcp);
-        expect(ClaudecodeMcp.fromFile).toHaveBeenCalledWith({
-          outputRoot: testDir,
-          validate: true,
-          global: true,
-        });
+        expect(ClaudecodeMcp.fromFile).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outputRoot: testDir,
+            validate: true,
+            global: true,
+          }),
+        );
       });
     });
 
@@ -301,11 +318,13 @@ describe("McpProcessor", () => {
 
         expect(files).toHaveLength(1);
         expect(files[0]).toBe(mockMcp);
-        expect(ClineMcp.fromFile).toHaveBeenCalledWith({
-          outputRoot: testDir,
-          validate: true,
-          global: false,
-        });
+        expect(ClineMcp.fromFile).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outputRoot: testDir,
+            validate: true,
+            global: false,
+          }),
+        );
       });
     });
 
@@ -330,11 +349,13 @@ describe("McpProcessor", () => {
 
         expect(files).toHaveLength(1);
         expect(files[0]).toBe(mockMcp);
-        expect(CopilotMcp.fromFile).toHaveBeenCalledWith({
-          outputRoot: testDir,
-          validate: true,
-          global: false,
-        });
+        expect(CopilotMcp.fromFile).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outputRoot: testDir,
+            validate: true,
+            global: false,
+          }),
+        );
       });
     });
 
@@ -359,11 +380,13 @@ describe("McpProcessor", () => {
 
         expect(files).toHaveLength(1);
         expect(files[0]).toBe(mockMcp);
-        expect(CopilotcliMcp.fromFile).toHaveBeenCalledWith({
-          outputRoot: testDir,
-          validate: true,
-          global: false,
-        });
+        expect(CopilotcliMcp.fromFile).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outputRoot: testDir,
+            validate: true,
+            global: false,
+          }),
+        );
       });
 
       it("should load CopilotcliMcp files in global mode", async () => {
@@ -387,11 +410,13 @@ describe("McpProcessor", () => {
 
         expect(files).toHaveLength(1);
         expect(files[0]).toBe(mockMcp);
-        expect(CopilotcliMcp.fromFile).toHaveBeenCalledWith({
-          outputRoot: testDir,
-          validate: true,
-          global: true,
-        });
+        expect(CopilotcliMcp.fromFile).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outputRoot: testDir,
+            validate: true,
+            global: true,
+          }),
+        );
       });
     });
 
@@ -416,11 +441,13 @@ describe("McpProcessor", () => {
 
         expect(files).toHaveLength(1);
         expect(files[0]).toBe(mockMcp);
-        expect(CursorMcp.fromFile).toHaveBeenCalledWith({
-          outputRoot: testDir,
-          validate: true,
-          global: false,
-        });
+        expect(CursorMcp.fromFile).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outputRoot: testDir,
+            validate: true,
+            global: false,
+          }),
+        );
       });
     });
 
@@ -445,11 +472,13 @@ describe("McpProcessor", () => {
 
         expect(files).toHaveLength(1);
         expect(files[0]).toBe(mockMcp);
-        expect(GeminiCliMcp.fromFile).toHaveBeenCalledWith({
-          outputRoot: testDir,
-          validate: true,
-          global: false,
-        });
+        expect(GeminiCliMcp.fromFile).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outputRoot: testDir,
+            validate: true,
+            global: false,
+          }),
+        );
       });
 
       it("should load GeminiCliMcp files in global mode", async () => {
@@ -473,11 +502,13 @@ describe("McpProcessor", () => {
 
         expect(files).toHaveLength(1);
         expect(files[0]).toBe(mockMcp);
-        expect(GeminiCliMcp.fromFile).toHaveBeenCalledWith({
-          outputRoot: testDir,
-          validate: true,
-          global: true,
-        });
+        expect(GeminiCliMcp.fromFile).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outputRoot: testDir,
+            validate: true,
+            global: true,
+          }),
+        );
       });
     });
 
@@ -501,11 +532,13 @@ describe("McpProcessor", () => {
 
         expect(files).toHaveLength(1);
         expect(files[0]).toBe(mockMcp);
-        expect(CodexcliMcp.fromFile).toHaveBeenCalledWith({
-          outputRoot: testDir,
-          validate: true,
-          global: true,
-        });
+        expect(CodexcliMcp.fromFile).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outputRoot: testDir,
+            validate: true,
+            global: true,
+          }),
+        );
       });
 
       it("should throw error when used in local mode", async () => {
@@ -547,10 +580,105 @@ describe("McpProcessor", () => {
 
         expect(files).toHaveLength(1);
         expect(files[0]).toBe(mockMcp);
-        expect(RooMcp.fromFile).toHaveBeenCalledWith({
+        expect(RooMcp.fromFile).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outputRoot: testDir,
+            validate: true,
+            global: false,
+          }),
+        );
+      });
+    });
+
+    describe("antigravity", () => {
+      it("should load AntigravityMcp files in project mode", async () => {
+        const mockMcp = new AntigravityMcp({
+          outputRoot: testDir,
+          relativeDirPath: ".agents",
+          relativeFilePath: "mcp_config.json",
+          fileContent: JSON.stringify({ mcpServers: {} }),
+        });
+
+        vi.mocked(AntigravityMcp.fromFile).mockResolvedValue(mockMcp);
+
+        const processor = new McpProcessor({
+          logger: createMockLogger(),
+          outputRoot: testDir,
+          toolTarget: "antigravity",
+        });
+
+        const files = await processor.loadToolFiles();
+
+        expect(files).toHaveLength(1);
+        expect(files[0]).toBe(mockMcp);
+        expect(AntigravityMcp.fromFile).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outputRoot: testDir,
+            validate: true,
+            global: false,
+          }),
+        );
+      });
+
+      it("should load AntigravityMcp files in global mode across all alternative paths", async () => {
+        const mockMcp1 = new AntigravityMcp({
+          outputRoot: testDir,
+          relativeDirPath: join(".gemini", "antigravity"),
+          relativeFilePath: "mcp_config.json",
+          fileContent: JSON.stringify({ mcpServers: {} }),
+        });
+        const mockMcp2 = new AntigravityMcp({
+          outputRoot: testDir,
+          relativeDirPath: join(".gemini", "antigravity-cli"),
+          relativeFilePath: "mcp_config.json",
+          fileContent: JSON.stringify({ mcpServers: {} }),
+        });
+        const mockMcp3 = new AntigravityMcp({
+          outputRoot: testDir,
+          relativeDirPath: join(".gemini", "antigravity-ide"),
+          relativeFilePath: "mcp_config.json",
+          fileContent: JSON.stringify({ mcpServers: {} }),
+        });
+
+        vi.mocked(AntigravityMcp.fromFile)
+          .mockResolvedValueOnce(mockMcp1)
+          .mockResolvedValueOnce(mockMcp2)
+          .mockResolvedValueOnce(mockMcp3);
+
+        const processor = new McpProcessor({
+          logger: createMockLogger(),
+          outputRoot: testDir,
+          toolTarget: "antigravity",
+          global: true,
+        });
+
+        const files = await processor.loadToolFiles();
+
+        expect(files).toHaveLength(3);
+        expect(files).toContain(mockMcp1);
+        expect(files).toContain(mockMcp2);
+        expect(files).toContain(mockMcp3);
+
+        expect(AntigravityMcp.fromFile).toHaveBeenNthCalledWith(1, {
           outputRoot: testDir,
           validate: true,
-          global: false,
+          global: true,
+          relativeDirPath: join(".gemini", "antigravity"),
+          relativeFilePath: "mcp_config.json",
+        });
+        expect(AntigravityMcp.fromFile).toHaveBeenNthCalledWith(2, {
+          outputRoot: testDir,
+          validate: true,
+          global: true,
+          relativeDirPath: join(".gemini", "antigravity-cli"),
+          relativeFilePath: "mcp_config.json",
+        });
+        expect(AntigravityMcp.fromFile).toHaveBeenNthCalledWith(3, {
+          outputRoot: testDir,
+          validate: true,
+          global: true,
+          relativeDirPath: join(".gemini", "antigravity-ide"),
+          relativeFilePath: "mcp_config.json",
         });
       });
     });
@@ -615,11 +743,13 @@ describe("McpProcessor", () => {
 
       expect(toolFiles).toHaveLength(1);
       expect(toolFiles[0]).toBe(mockToolMcp);
-      expect(ClaudecodeMcp.fromRulesyncMcp).toHaveBeenCalledWith({
-        outputRoot: testDir,
-        rulesyncMcp,
-        global: false,
-      });
+      expect(ClaudecodeMcp.fromRulesyncMcp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outputRoot: testDir,
+          rulesyncMcp,
+          global: false,
+        }),
+      );
     });
 
     it("should convert rulesync files to claudecode tool files in global mode", async () => {
@@ -650,11 +780,13 @@ describe("McpProcessor", () => {
 
       expect(toolFiles).toHaveLength(1);
       expect(toolFiles[0]).toBe(mockToolMcp);
-      expect(ClaudecodeMcp.fromRulesyncMcp).toHaveBeenCalledWith({
-        outputRoot: testDir,
-        rulesyncMcp,
-        global: true,
-      });
+      expect(ClaudecodeMcp.fromRulesyncMcp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outputRoot: testDir,
+          rulesyncMcp,
+          global: true,
+        }),
+      );
     });
 
     it("should convert rulesync files to cline tool files", async () => {
@@ -684,11 +816,13 @@ describe("McpProcessor", () => {
 
       expect(toolFiles).toHaveLength(1);
       expect(toolFiles[0]).toBe(mockToolMcp);
-      expect(ClineMcp.fromRulesyncMcp).toHaveBeenCalledWith({
-        outputRoot: testDir,
-        rulesyncMcp,
-        global: false,
-      });
+      expect(ClineMcp.fromRulesyncMcp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outputRoot: testDir,
+          rulesyncMcp,
+          global: false,
+        }),
+      );
     });
 
     it("should convert rulesync files to copilot tool files", async () => {
@@ -718,11 +852,13 @@ describe("McpProcessor", () => {
 
       expect(toolFiles).toHaveLength(1);
       expect(toolFiles[0]).toBe(mockToolMcp);
-      expect(CopilotMcp.fromRulesyncMcp).toHaveBeenCalledWith({
-        outputRoot: testDir,
-        rulesyncMcp,
-        global: false,
-      });
+      expect(CopilotMcp.fromRulesyncMcp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outputRoot: testDir,
+          rulesyncMcp,
+          global: false,
+        }),
+      );
     });
 
     it("should convert rulesync files to copilotcli tool files", async () => {
@@ -752,11 +888,13 @@ describe("McpProcessor", () => {
 
       expect(toolFiles).toHaveLength(1);
       expect(toolFiles[0]).toBe(mockToolMcp);
-      expect(CopilotcliMcp.fromRulesyncMcp).toHaveBeenCalledWith({
-        outputRoot: testDir,
-        rulesyncMcp,
-        global: false,
-      });
+      expect(CopilotcliMcp.fromRulesyncMcp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outputRoot: testDir,
+          rulesyncMcp,
+          global: false,
+        }),
+      );
     });
 
     it("should convert rulesync files to copilotcli tool files in global mode", async () => {
@@ -787,11 +925,13 @@ describe("McpProcessor", () => {
 
       expect(toolFiles).toHaveLength(1);
       expect(toolFiles[0]).toBe(mockToolMcp);
-      expect(CopilotcliMcp.fromRulesyncMcp).toHaveBeenCalledWith({
-        outputRoot: testDir,
-        rulesyncMcp,
-        global: true,
-      });
+      expect(CopilotcliMcp.fromRulesyncMcp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outputRoot: testDir,
+          rulesyncMcp,
+          global: true,
+        }),
+      );
     });
 
     it("should convert rulesync files to cursor tool files", async () => {
@@ -821,11 +961,13 @@ describe("McpProcessor", () => {
 
       expect(toolFiles).toHaveLength(1);
       expect(toolFiles[0]).toBe(mockToolMcp);
-      expect(CursorMcp.fromRulesyncMcp).toHaveBeenCalledWith({
-        outputRoot: testDir,
-        rulesyncMcp,
-        global: false,
-      });
+      expect(CursorMcp.fromRulesyncMcp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outputRoot: testDir,
+          rulesyncMcp,
+          global: false,
+        }),
+      );
     });
 
     it("should convert rulesync files to geminicli tool files", async () => {
@@ -855,11 +997,13 @@ describe("McpProcessor", () => {
 
       expect(toolFiles).toHaveLength(1);
       expect(toolFiles[0]).toBe(mockToolMcp);
-      expect(GeminiCliMcp.fromRulesyncMcp).toHaveBeenCalledWith({
-        outputRoot: testDir,
-        rulesyncMcp,
-        global: false,
-      });
+      expect(GeminiCliMcp.fromRulesyncMcp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outputRoot: testDir,
+          rulesyncMcp,
+          global: false,
+        }),
+      );
     });
 
     it("should convert rulesync files to geminicli tool files in global mode", async () => {
@@ -890,11 +1034,13 @@ describe("McpProcessor", () => {
 
       expect(toolFiles).toHaveLength(1);
       expect(toolFiles[0]).toBe(mockToolMcp);
-      expect(GeminiCliMcp.fromRulesyncMcp).toHaveBeenCalledWith({
-        outputRoot: testDir,
-        rulesyncMcp,
-        global: true,
-      });
+      expect(GeminiCliMcp.fromRulesyncMcp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outputRoot: testDir,
+          rulesyncMcp,
+          global: true,
+        }),
+      );
     });
 
     it("should convert rulesync files to codexcli tool files in global mode", async () => {
@@ -923,11 +1069,13 @@ describe("McpProcessor", () => {
 
       expect(toolFiles).toHaveLength(1);
       expect(toolFiles[0]).toBe(mockToolMcp);
-      expect(CodexcliMcp.fromRulesyncMcp).toHaveBeenCalledWith({
-        outputRoot: testDir,
-        rulesyncMcp,
-        global: true,
-      });
+      expect(CodexcliMcp.fromRulesyncMcp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outputRoot: testDir,
+          rulesyncMcp,
+          global: true,
+        }),
+      );
     });
 
     it("should convert rulesync files to roo tool files", async () => {
@@ -957,10 +1105,117 @@ describe("McpProcessor", () => {
 
       expect(toolFiles).toHaveLength(1);
       expect(toolFiles[0]).toBe(mockToolMcp);
-      expect(RooMcp.fromRulesyncMcp).toHaveBeenCalledWith({
+      expect(RooMcp.fromRulesyncMcp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outputRoot: testDir,
+          rulesyncMcp,
+          global: false,
+        }),
+      );
+    });
+
+    it("should convert rulesync files to antigravity tool files", async () => {
+      const rulesyncMcp = new RulesyncMcp({
+        outputRoot: testDir,
+        relativeDirPath: RULESYNC_RELATIVE_DIR_PATH,
+        relativeFilePath: ".mcp.json",
+        fileContent: JSON.stringify({ mcpServers: {} }),
+      });
+
+      const mockToolMcp = new AntigravityMcp({
+        outputRoot: testDir,
+        relativeDirPath: ".agents",
+        relativeFilePath: "mcp.json",
+        fileContent: JSON.stringify({ mcpServers: {} }),
+      });
+
+      vi.mocked(AntigravityMcp.fromRulesyncMcp).mockResolvedValue(mockToolMcp);
+
+      const processor = new McpProcessor({
+        logger: createMockLogger(),
+        outputRoot: testDir,
+        toolTarget: "antigravity",
+      });
+
+      const toolFiles = await processor.convertRulesyncFilesToToolFiles([rulesyncMcp]);
+
+      expect(toolFiles).toHaveLength(1);
+      expect(toolFiles[0]).toBe(mockToolMcp);
+      expect(AntigravityMcp.fromRulesyncMcp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          outputRoot: testDir,
+          rulesyncMcp,
+          global: false,
+        }),
+      );
+    });
+
+    it("should convert rulesync files to antigravity tool files in global mode across all alternative paths", async () => {
+      const rulesyncMcp = new RulesyncMcp({
+        outputRoot: testDir,
+        relativeDirPath: RULESYNC_RELATIVE_DIR_PATH,
+        relativeFilePath: ".mcp.json",
+        fileContent: JSON.stringify({ mcpServers: {} }),
+      });
+
+      const mockToolMcp1 = new AntigravityMcp({
+        outputRoot: testDir,
+        relativeDirPath: join(".gemini", "antigravity"),
+        relativeFilePath: "mcp_config.json",
+        fileContent: JSON.stringify({ mcpServers: {} }),
+      });
+      const mockToolMcp2 = new AntigravityMcp({
+        outputRoot: testDir,
+        relativeDirPath: join(".gemini", "antigravity-cli"),
+        relativeFilePath: "mcp_config.json",
+        fileContent: JSON.stringify({ mcpServers: {} }),
+      });
+      const mockToolMcp3 = new AntigravityMcp({
+        outputRoot: testDir,
+        relativeDirPath: join(".gemini", "antigravity-ide"),
+        relativeFilePath: "mcp_config.json",
+        fileContent: JSON.stringify({ mcpServers: {} }),
+      });
+
+      vi.mocked(AntigravityMcp.fromRulesyncMcp)
+        .mockResolvedValueOnce(mockToolMcp1)
+        .mockResolvedValueOnce(mockToolMcp2)
+        .mockResolvedValueOnce(mockToolMcp3);
+
+      const processor = new McpProcessor({
+        logger: createMockLogger(),
+        outputRoot: testDir,
+        toolTarget: "antigravity",
+        global: true,
+      });
+
+      const toolFiles = await processor.convertRulesyncFilesToToolFiles([rulesyncMcp]);
+
+      expect(toolFiles).toHaveLength(3);
+      expect(toolFiles).toContain(mockToolMcp1);
+      expect(toolFiles).toContain(mockToolMcp2);
+      expect(toolFiles).toContain(mockToolMcp3);
+
+      expect(AntigravityMcp.fromRulesyncMcp).toHaveBeenNthCalledWith(1, {
         outputRoot: testDir,
         rulesyncMcp,
-        global: false,
+        global: true,
+        relativeDirPath: join(".gemini", "antigravity"),
+        relativeFilePath: "mcp_config.json",
+      });
+      expect(AntigravityMcp.fromRulesyncMcp).toHaveBeenNthCalledWith(2, {
+        outputRoot: testDir,
+        rulesyncMcp,
+        global: true,
+        relativeDirPath: join(".gemini", "antigravity-cli"),
+        relativeFilePath: "mcp_config.json",
+      });
+      expect(AntigravityMcp.fromRulesyncMcp).toHaveBeenNthCalledWith(3, {
+        outputRoot: testDir,
+        rulesyncMcp,
+        global: true,
+        relativeDirPath: join(".gemini", "antigravity-ide"),
+        relativeFilePath: "mcp_config.json",
       });
     });
 

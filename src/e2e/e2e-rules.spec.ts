@@ -69,7 +69,7 @@ This is a test rule for E2E testing.
     { target: "cline", outputPath: join(".clinerules", "overview.md") },
     { target: "roo", outputPath: join(".roo", "rules", "overview.md") },
     { target: "kiro", outputPath: join(".kiro", "steering", "overview.md") },
-    { target: "antigravity", outputPath: join(".agent", "rules", "overview.md") },
+    { target: "antigravity", outputPath: join(".agents", "rules", "overview.md") },
     { target: "augmentcode", outputPath: join(".augment", "rules", "overview.md") },
     { target: "windsurf", outputPath: join(".windsurf", "rules", "overview.md") },
     { target: "takt", outputPath: join(".takt", "facets", "policies", "overview.md") },
@@ -221,7 +221,7 @@ describe("E2E: rules (import)", () => {
     },
     {
       target: "antigravity",
-      sourcePath: join(".agent", "rules", "overview.md"),
+      sourcePath: join(".agents", "rules", "overview.md"),
       importedFileName: "overview.md",
     },
     {

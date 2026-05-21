@@ -11,6 +11,7 @@ export type ToolSkillFromRulesyncSkillParams = {
   rulesyncSkill: RulesyncSkill;
   validate?: boolean;
   global?: boolean;
+  relativeDirPath?: string;
 };
 
 export type ToolSkillSettablePaths = {

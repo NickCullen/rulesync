@@ -38,13 +38,13 @@ describe("AntigravityMcp", () => {
 
       const mcp = new AntigravityMcp({
         relativeDirPath: ".agents",
-        relativeFilePath: "mcp.json",
+        relativeFilePath: "mcp_config.json",
         fileContent: validJsonContent,
       });
 
       expect(mcp).toBeInstanceOf(AntigravityMcp);
       expect(mcp.getRelativeDirPath()).toBe(".agents");
-      expect(mcp.getRelativeFilePath()).toBe("mcp.json");
+      expect(mcp.getRelativeFilePath()).toBe("mcp_config.json");
       expect(mcp.getFileContent()).toBe(validJsonContent);
     });
 
@@ -56,12 +56,12 @@ describe("AntigravityMcp", () => {
       const mcp = new AntigravityMcp({
         outputRoot: "/custom/path",
         relativeDirPath: join(".gemini", "antigravity"),
-        relativeFilePath: "mcp.json",
+        relativeFilePath: "mcp_config.json",
         fileContent: validJsonContent,
         global: true,
       });
 
-      expect(mcp.getFilePath()).toBe("/custom/path/.gemini/antigravity/mcp.json");
+      expect(mcp.getFilePath()).toBe("/custom/path/.gemini/antigravity/mcp_config.json");
     });
   });
 
@@ -78,7 +78,7 @@ describe("AntigravityMcp", () => {
           },
         },
       };
-      await writeFileContent(join(mcpDir, "mcp.json"), JSON.stringify(jsonData, null, 2));
+      await writeFileContent(join(mcpDir, "mcp_config.json"), JSON.stringify(jsonData, null, 2));
 
       const mcp = await AntigravityMcp.fromFile({
         outputRoot: testDir,
@@ -87,7 +87,7 @@ describe("AntigravityMcp", () => {
 
       expect(mcp).toBeInstanceOf(AntigravityMcp);
       expect(mcp.getJson()).toEqual(jsonData);
-      expect(mcp.getFilePath()).toBe(join(testDir, ".agents/mcp.json"));
+      expect(mcp.getFilePath()).toBe(join(testDir, ".agents/mcp_config.json"));
     });
 
     it("should create instance from file in global mode", async () => {
@@ -102,19 +102,65 @@ describe("AntigravityMcp", () => {
           },
         },
       };
-      await writeFileContent(join(globalDir, "mcp.json"), JSON.stringify(jsonData));
+      await writeFileContent(join(globalDir, "mcp_config.json"), JSON.stringify(jsonData));
 
       const mcp = await AntigravityMcp.fromFile({
         outputRoot: testDir,
         global: true,
       });
 
-      expect(mcp.getFilePath()).toBe(join(testDir, ".gemini/antigravity/mcp.json"));
+      expect(mcp.getFilePath()).toBe(join(testDir, ".gemini/antigravity/mcp_config.json"));
+      expect(mcp.getJson()).toEqual(jsonData);
+    });
+
+    it("should create instance from file with explicit relativeDirPath and relativeFilePath", async () => {
+      const customDir = join(testDir, ".gemini", "antigravity-cli");
+      await ensureDir(customDir);
+
+      const jsonData = {
+        mcpServers: {
+          cliMcp: {
+            command: "node",
+          },
+        },
+      };
+      await writeFileContent(join(customDir, "mcp_config.json"), JSON.stringify(jsonData));
+
+      const mcp = await AntigravityMcp.fromFile({
+        outputRoot: testDir,
+        global: true,
+        relativeDirPath: join(".gemini", "antigravity-cli"),
+        relativeFilePath: "mcp_config.json",
+      });
+
+      expect(mcp.getFilePath()).toBe(join(testDir, ".gemini/antigravity-cli/mcp_config.json"));
       expect(mcp.getJson()).toEqual(jsonData);
     });
   });
 
   describe("fromRulesyncMcp", () => {
+    it("should support custom relativeDirPath and relativeFilePath", () => {
+      const inputMcpServers = {
+        remote: {
+          type: "sse" as const,
+          url: "http://localhost:8080/mcp",
+        },
+      };
+      const rulesyncMcp = new RulesyncMcp({
+        relativeDirPath: RULESYNC_RELATIVE_DIR_PATH,
+        relativeFilePath: "mcp.json",
+        fileContent: JSON.stringify({ mcpServers: inputMcpServers }),
+      });
+
+      const mcp = AntigravityMcp.fromRulesyncMcp({
+        rulesyncMcp,
+        relativeDirPath: join(".gemini", "antigravity-cli"),
+        relativeFilePath: "mcp_config.json",
+      });
+
+      expect(mcp.getRelativeDirPath()).toBe(join(".gemini", "antigravity-cli"));
+      expect(mcp.getRelativeFilePath()).toBe("mcp_config.json");
+    });
     it("should translate url to serverUrl for remote servers", () => {
       const inputMcpServers = {
         remote: {
@@ -181,7 +227,7 @@ describe("AntigravityMcp", () => {
       };
       const mcp = new AntigravityMcp({
         relativeDirPath: ".agents",
-        relativeFilePath: "mcp.json",
+        relativeFilePath: "mcp_config.json",
         fileContent: JSON.stringify({ mcpServers: inputMcpServers }),
       });
 
@@ -204,7 +250,7 @@ describe("AntigravityMcp", () => {
     it("should return successful validation result", () => {
       const mcp = new AntigravityMcp({
         relativeDirPath: ".agents",
-        relativeFilePath: "mcp.json",
+        relativeFilePath: "mcp_config.json",
         fileContent: JSON.stringify({
           mcpServers: {
             test: {
@@ -221,7 +267,7 @@ describe("AntigravityMcp", () => {
     it("should fail validation for invalid config", () => {
       const mcp = new AntigravityMcp({
         relativeDirPath: ".agents",
-        relativeFilePath: "mcp.json",
+        relativeFilePath: "mcp_config.json",
         fileContent: JSON.stringify({
           mcpServers: {
             test: {
